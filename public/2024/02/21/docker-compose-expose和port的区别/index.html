@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="
+  
+    expose 指定的端口，是提供给 compose 中其他 service 用的，不会映射到宿主机上。
+  
+  
+    port 指定的端口，则会映射到宿主机上。
+  
+
+expose
+
+  services:
+  myapp1:
+    .
+    expose:
+      - &#34;3000&#34;
+      - &#34;8000&#34;
+
+port
+
+  services:
+  myapp1:
+    ...
+    ports:
+    - &#34;3000&#34;                 # 容器中的3000端口映射到主机一个随机端口
+    - &#34;3001-3005&#34;            # 容器中的3001-3005端口映射到主机一个随机端口段
+    - &#34;8000:8000&#34;            # 容器中的8000端口映射到主机的8000端口
+    - &#34;9090-9091:8080-8081&#34;  # 容器中的8080-8081映射到主机的9090-9091
+    - &#34;127.0.0.1:8002:8002&#34;  # 容器中的8002端口映射主机127.0.0.1地址的8002
+    - &#34;6060:6060/udp&#34;        # 限制容器中6060端口的udp协议到主机的6060端口  
+">  
+
+  <title>
+    
+      Docker compose中expose和port的区别
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2024-02-21 15:48:19 &#43;0000 &#43;0000">
+            2024-02-21
+        </time>
+    </p>
+
+    <h1>Docker compose中expose和port的区别</h1>
+
+    
+
+    <ul class="wp-block-list">
+  <li>
+    expose 指定的端口，是提供给 compose 中其他 service 用的，不会映射到宿主机上。
+  </li>
+  <li>
+    port 指定的端口，则会映射到宿主机上。
+  </li>
+</ul>
+<h4 class="wp-block-heading" id="expose">expose</h4>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-js" data-lang="JavaScript"><code>services:
+  myapp1:
+    .
+    expose:
+      - "3000"
+      - "8000"</code></pre>
+</div>
+<h4 class="wp-block-heading" id="port">port</h4>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-js" data-lang="JavaScript"><code>services:
+  myapp1:
+    ...
+    ports:
+    - "3000"                 # 容器中的3000端口映射到主机一个随机端口
+    - "3001-3005"            # 容器中的3001-3005端口映射到主机一个随机端口段
+    - "8000:8000"            # 容器中的8000端口映射到主机的8000端口
+    - "9090-9091:8080-8081"  # 容器中的8080-8081映射到主机的9090-9091
+    - "127.0.0.1:8002:8002"  # 容器中的8002端口映射主机127.0.0.1地址的8002
+    - "6060:6060/udp"        # 限制容器中6060端口的udp协议到主机的6060端口  </code></pre>
+</div>
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>

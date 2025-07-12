@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="最近一直在搞 CDN 相关的东西，碰到最多的便是缓存了，简单记录一下相应的内容。
+缓存是什么
+客户端浏览器访问网页时，需要从服务端拉取到相应的资源，但是有的客户端离服务端可能会很远，访问的时候会直观感受到 慢，缓存就是用来解决这一问题的。
+缓存有哪些：
+
+  
+    本地缓存。浏览器会根据请求头的策略，将数据缓存在内存或者磁盘中
+  
+  
+    CDN。Content Delivery Network，将资源先存放在离用户近的地方，这样用户访问的链路更短，访问的时候便可以加速，同时 CDN 访问服务端源站也会有相应的加成（CDN提供商的网络比客户本地的网络会更可靠）
+  
+
+如何控制缓存
+浏览器如何确定我能否缓存这个资源呢?
+它是通过 http Response 中的 Cache-Control 请求头来决定的。
+缓存行为：
+
+  
+    public ：表明响应可以被任何对象（包括：发送请求的客户端，代理服务器，等等）缓存
+  
+  
+    private ：表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）
+  
+  
+    no-cache ：在发布缓存副本之前，强制要求缓存把请求提交给原始服务器进行验证 (协商缓存验证)
+  
+  
+    no-store ：不使用任何缓存
+  
+
+缓存时间：
+
+  
+    max-age= 设置缓存存储的最大周期，超过这个时间缓存被认为过期 (单位秒)，时间是相对于请求的时间。
+  
+
+目前接触比较多的参数主要是上述这些，更多的参数可以参照 MDN文档。除了
+Cache-Control 头之外，http 中还会通过 Etag 请求头作为资源的唯一标签。
+在缓存到期之后，再请求资源，客户端会通过 If-None-Match 带上 Etag 的内容，发送给服务端，服务端判断资源是否发生变化，未发生变化，则返回 304 Not Modified，这样就无需再传输完整的资源，节省了带宽。
+浏览器如何判断缓存过期了呢？
+服务端响应的头中，除了 Cache-Control ，还有一个 Date 的头，记录请求的时间，这样便可以根据 Date &#43; max-age 的秒数，拿到缓存的到期时间，再次请求资源时，缓存有效则直接使用缓存的资源。">  
+
+  <title>
+    
+      HTTP缓存
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2024-08-05 03:30:41 &#43;0000 &#43;0000">
+            2024-08-05
+        </time>
+    </p>
+
+    <h1>HTTP缓存</h1>
+
+    
+
+    <p>最近一直在搞 CDN 相关的东西，碰到最多的便是缓存了，简单记录一下相应的内容。</p>
+<h2 class="wp-block-heading" id="缓存是什么">缓存是什么</h2>
+<p>客户端浏览器访问网页时，需要从服务端拉取到相应的资源，但是有的客户端离服务端可能会很远，访问的时候会直观感受到 <strong>慢</strong>，缓存就是用来解决这一问题的。</p>
+<p>缓存有哪些：</p>
+<ol class="wp-block-list">
+  <li>
+    本地缓存。浏览器会根据请求头的策略，将数据缓存在内存或者磁盘中<br /><img loading="lazy" decoding="async" width="550" height="208" class="wp-image-197" style="width: 550px;" src="https://glog.likungong.com/wp-content/uploads/2024/07/Snipaste_2024-07-29_22-40-33.jpg" alt="" srcset="https://glog.likungong.com/wp-content/uploads/2024/07/Snipaste_2024-07-29_22-40-33.jpg 1482w, https://glog.likungong.com/wp-content/uploads/2024/07/Snipaste_2024-07-29_22-40-33-300x114.jpg 300w, https://glog.likungong.com/wp-content/uploads/2024/07/Snipaste_2024-07-29_22-40-33-1024x388.jpg 1024w, https://glog.likungong.com/wp-content/uploads/2024/07/Snipaste_2024-07-29_22-40-33-768x291.jpg 768w" sizes="auto, (max-width: 550px) 100vw, 550px" />
+  </li>
+  <li>
+    CDN。Content Delivery Network，将资源先存放在离用户近的地方，这样用户访问的链路更短，访问的时候便可以加速，同时 CDN 访问服务端源站也会有相应的加成（CDN提供商的网络比客户本地的网络会更可靠）
+  </li>
+</ol>
+<h2 class="wp-block-heading" id="如何控制缓存">如何控制缓存</h2>
+<p><strong>浏览器如何确定我能否缓存这个资源呢?</strong></p>
+<p>它是通过 http Response 中的 <strong>Cache-Control</strong> 请求头来决定的。</p>
+<p>缓存行为：</p>
+<ul class="wp-block-list">
+  <li>
+    public ：表明响应可以被任何对象（包括：发送请求的客户端，代理服务器，等等）缓存
+  </li>
+  <li>
+    private ：表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）
+  </li>
+  <li>
+    no-cache ：在发布缓存副本之前，强制要求缓存把请求提交给原始服务器进行验证 (协商缓存验证)
+  </li>
+  <li>
+    no-store ：不使用任何缓存
+  </li>
+</ul>
+<p>缓存时间：</p>
+<ul class="wp-block-list">
+  <li>
+    max-age=<seconds> <br />设置缓存存储的最大周期，超过这个时间缓存被认为过期 (单位秒)，时间是相对于请求的时间。
+  </li>
+</ul>
+<p>目前接触比较多的参数主要是上述这些，更多的参数可以参照 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control">MDN文档</a>。除了<br>
+Cache-Control 头之外，http 中还会通过 Etag 请求头作为资源的唯一标签。</p>
+<p>在缓存到期之后，再请求资源，客户端会通过 If-None-Match 带上 Etag 的内容，发送给服务端，服务端判断资源是否发生变化，未发生变化，则返回 304 Not Modified，这样就无需再传输完整的资源，节省了带宽。</p>
+<p><strong>浏览器如何判断缓存过期了呢？</strong></p>
+<p>服务端响应的头中，除了 Cache-Control ，还有一个 Date 的头，记录请求的时间，这样便可以根据 Date + max-age 的秒数，拿到缓存的到期时间，再次请求资源时，缓存有效则直接使用缓存的资源。</p>
+<p><strong>如何判断命中了 CDN 的缓存？</strong></p>
+<p>命中 CDN 缓存之后，一般在 Response header 中都会有相关的响应头<figure class="wp-block-image size-full"></p>
+<p><img loading="lazy" decoding="async" width="834" height="766" src="https://glog.likungong.com/wp-content/uploads/2024/08/图片.png" alt="" class="wp-image-201" srcset="https://glog.likungong.com/wp-content/uploads/2024/08/图片.png 834w, https://glog.likungong.com/wp-content/uploads/2024/08/图片-300x276.png 300w, https://glog.likungong.com/wp-content/uploads/2024/08/图片-768x705.png 768w" sizes="auto, (max-width: 834px) 100vw, 834px" /> </figure></p>
+
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>

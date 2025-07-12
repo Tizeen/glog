@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="什么是CPU Throttling
+在 K8S 中，内存有很明确的大小指标来衡量，一旦超过设定的 Limit，就会发生 OOM ，被系统 Kill 掉，这就是 PodOOM 事件。
+而 CPU 的衡量指标则有点模糊，是根据占据 CPU 的使用时间来决定的。CPU 使用超限了 Pod 也不会被杀掉，而是 CPU 使用会被限流。
+CPU Throttling 直译来说就是 CPU 使用被节流了，被限制了 CPU 的使用时间。
+在 K8S 中，通过调整容器中进程的 CPU 优先级(nice值，值越小，优先级越高)来达到限流的效果。
+CPU Throttling影响什么
+影响：
+
+  
+    CPU 处理变慢了，导致服务性能下降，response_time 响应时间增加
+  
+
+如何监控CPU Throttling
+cadvisor 提供了相应指标：
+
+  
+    container_cpu_cfs_throttled_periods_total
+  
+  
+    container_cpu_cfs_periods_total
+  
+
+一个 PromQL例子
+
+  sum(increase(container_cpu_cfs_throttled_periods_total{container!=&#34;filebeat&#34;,cluster!~&#34;kube.*-(dev|test|pre|t|t2|t3|s|u|d)$&#34;}[5m])) by (container, pod, namespace, cluster)
+  /
+sum(increase(container_cpu_cfs_periods_total{cluster!~&#34;kube.*-(dev|test|pre|t|t2|t3|s|u|d)$&#34;}[5m])) by (container, pod, namespace, cluster)
+  &gt; ( 10 / 100 )
+
+如何解决CPU Throttling
+解决：">  
+
+  <title>
+    
+      K8S CPU Throttling
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2024-03-10 03:26:38 &#43;0000 &#43;0000">
+            2024-03-10
+        </time>
+    </p>
+
+    <h1>K8S CPU Throttling</h1>
+
+    
+
+    <h3 class="wp-block-heading" id="什么是cpu-throttling">什么是CPU Throttling</h3>
+<p>在 K8S 中，内存有很明确的大小指标来衡量，一旦超过设定的 Limit，就会发生 OOM ，被系统 Kill 掉，这就是 PodOOM 事件。<br>
+而 CPU 的衡量指标则有点模糊，是根据占据 CPU 的使用时间来决定的。CPU 使用超限了 Pod 也不会被杀掉，而是 CPU 使用会被限流。</p>
+<p>CPU Throttling 直译来说就是 CPU 使用被节流了，被限制了 CPU 的使用时间。</p>
+<p>在 K8S 中，通过调整容器中进程的 CPU 优先级(nice值，值越小，优先级越高)来达到限流的效果。</p>
+<h3 class="wp-block-heading" id="cpu-throttling影响什么">CPU Throttling影响什么</h3>
+<p>影响：</p>
+<ol class="wp-block-list">
+  <li>
+    CPU 处理变慢了，导致服务性能下降，response_time 响应时间增加
+  </li>
+</ol>
+<h3 class="wp-block-heading" id="如何监控cpu-throttling">如何监控CPU Throttling</h3>
+<p>cadvisor 提供了相应指标：</p>
+<ol class="wp-block-list">
+  <li>
+    container_cpu_cfs_throttled_periods_total
+  </li>
+  <li>
+    container_cpu_cfs_periods_total
+  </li>
+</ol>
+<p>一个 PromQL例子</p>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-sql" data-lang="SQL"><code>sum(increase(container_cpu_cfs_throttled_periods_total{container!="filebeat",cluster!~"kube.*-(dev|test|pre|t|t2|t3|s|u|d)$"}[5m])) by (container, pod, namespace, cluster)
+  /
+sum(increase(container_cpu_cfs_periods_total{cluster!~"kube.*-(dev|test|pre|t|t2|t3|s|u|d)$"}[5m])) by (container, pod, namespace, cluster)
+  &gt; ( 10 / 100 )</code></pre>
+</div>
+<h3 class="wp-block-heading" id="如何解决cpu-throttling">如何解决CPU Throttling</h3>
+<p>解决：</p>
+<ol class="wp-block-list">
+  <li>
+    横向增加 Pod 数量，降低每个 Pod 的访问量，以降低 CPU 使用时间
+  </li>
+  <li>
+    纵向增加 CPU 资源限制（调大 Limit 值）
+  </li>
+</ol>
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>

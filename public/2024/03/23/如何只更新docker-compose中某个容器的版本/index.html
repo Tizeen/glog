@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="遇到了很多次这个场景，发布版本的时候，只需要更新 Docker Compose 中某个容器的镜像版本并重启，不需要重启其他依赖的容器。
+其实 Docker 已经为我们考虑到了这个问题了，并提供了相应的参数。
+方法一：
+
+  
+    更新 docker-compose.yml 中的镜像 ID
+  
+  
+    重新执行 docker compose up -d ，会自动判断那个 service 发生了变化，并重启变化的容器
+  
+
+方法二：
+
+  
+    同样是更新 docker-compose.yml 中的镜像 ID
+  
+  
+    执行 up 时，加上 --no-deps 的参数，也能做到不重启其他依赖容器。这种做法的好处是可以明确指定那个容器，如果有多个容器需要重启，能做到有顺序的重启
+  
+
+
+  docker compose up -d --no-deps container_name
+">  
+
+  <title>
+    
+      如何只更新Docker Compose中某个容器的版本
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2024-03-23 15:44:45 &#43;0000 &#43;0000">
+            2024-03-23
+        </time>
+    </p>
+
+    <h1>如何只更新Docker Compose中某个容器的版本</h1>
+
+    
+
+    <p>遇到了很多次这个场景，发布版本的时候，只需要更新 Docker Compose 中某个容器的镜像版本并重启，不需要重启其他依赖的容器。</p>
+<p>其实 Docker 已经为我们考虑到了这个问题了，并提供了相应的参数。</p>
+<p>方法一：</p>
+<ol class="wp-block-list">
+  <li>
+    更新 <code>docker-compose.yml </code>中的镜像 ID
+  </li>
+  <li>
+    重新执行 <code>docker compose up -d </code>，会自动判断那个 service 发生了变化，并重启变化的容器
+  </li>
+</ol>
+<p>方法二：</p>
+<ol class="wp-block-list">
+  <li>
+    同样是更新 <code>docker-compose.yml</code> 中的镜像 ID
+  </li>
+  <li>
+    执行 up 时，加上 <code>--no-deps</code> 的参数，也能做到不重启其他依赖容器。这种做法的好处是可以明确指定那个容器，如果有多个容器需要重启，能做到有顺序的重启
+  </li>
+</ol>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-bash" data-lang="Bash"><code>docker compose up -d --no-deps container_name</code></pre>
+</div>
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>

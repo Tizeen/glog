@@ -1,0 +1,8 @@
+baseURL: https://glog.likungong.com/
+languageCode: zh-cn
+title: Glog
+theme: ["hugo-theme-nostyleplease"]
+markup:
+  goldmark:
+    renderer:
+      unsafe: true

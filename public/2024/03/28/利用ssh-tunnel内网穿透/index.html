@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="SSH 除了平时连接远程服务器外，还有不少其他的功能，刚好最近有这个需求，利用了 SSH Tunnel 实现内网穿透，这里简单记录一下。
+前提
+
+  
+    需要访问的内网服务器 A
+  
+  
+    有公网地址外网服务器 B
+  
+
+利用公网服务器 B 来暴露服务器 A 中的端口，需要 A 主动通过 SSH 连接服务器 B
+配置过程
+SSH 原生支持远程端口转发，在内网服务器 A 上执行以下命令：
+
+  # 内网服务器 A 上执行
+# ssh -fN -R 23456:127.0.0.1:22 -i xxx.key B_user@B_public_ip
+
+命令解释：
+
+  
+    23456 端口，是监听在公网服务器 B 上的
+  
+  
+    127.0.0.1:22 表示将内网服务器 A 的 ssh 端口映射到公网服务器 23456 端口
+  
+  
+    -f 表示后台运行
+  
+  
+    -N 不执行远程命令。端口转发时使用
+  
+
+这个时候在第三台服务器 C 上，就可以通过公网服务器 B 的公网地址 &#43; 23456 端口，访问到内网服务器 A 了
+
+  # 三方服务器 C 上执行
+$ ssh -p 23456 A_user@B_public_ip
+
+进一步优化
+SSH 的连接有时会因为网络不稳定而断开，我们可以使用 autossh 这个工具来帮我们维持 SSH 连接，在断开时自动重连。">  
+
+  <title>
+    
+      利用SSH Tunnel内网穿透
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2024-03-28 06:14:37 &#43;0000 &#43;0000">
+            2024-03-28
+        </time>
+    </p>
+
+    <h1>利用SSH Tunnel内网穿透</h1>
+
+    
+
+    <p>SSH 除了平时连接远程服务器外，还有不少其他的功能，刚好最近有这个需求，利用了 SSH Tunnel 实现内网穿透，这里简单记录一下。</p>
+<h3 class="wp-block-heading" id="前提">前提</h3>
+<ol class="wp-block-list">
+  <li>
+    需要访问的内网服务器 A
+  </li>
+  <li>
+    有公网地址外网服务器 B
+  </li>
+</ol>
+<p>利用公网服务器 B 来暴露服务器 A 中的端口，需要 A 主动通过 SSH 连接服务器 B</p>
+<h3 class="wp-block-heading" id="配置过程">配置过程</h3>
+<p>SSH 原生支持远程端口转发，在内网服务器 A 上执行以下命令：</p>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-bash" data-lang="Bash"><code># 内网服务器 A 上执行
+# ssh -fN -R 23456:127.0.0.1:22 -i xxx.key B_user@B_public_ip</code></pre>
+</div>
+<p>命令解释：</p>
+<ol class="wp-block-list">
+  <li>
+    23456 端口，是监听在公网服务器 B 上的
+  </li>
+  <li>
+    127.0.0.1:22 表示将内网服务器 A 的 ssh 端口映射到公网服务器 23456 端口
+  </li>
+  <li>
+    -f 表示后台运行
+  </li>
+  <li>
+    -N 不执行远程命令。端口转发时使用
+  </li>
+</ol>
+<p>这个时候在第三台服务器 C 上，就可以通过公网服务器 B 的公网地址 + 23456 端口，访问到内网服务器 A 了</p>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-bash" data-lang="Bash"><code># 三方服务器 C 上执行
+$ ssh -p 23456 A_user@B_public_ip</code></pre>
+</div>
+<h3 class="wp-block-heading" id="进一步优化">进一步优化</h3>
+<p>SSH 的连接有时会因为网络不稳定而断开，我们可以使用 <a href="https://github.com/Autossh/autossh">autossh</a> 这个工具来帮我们维持 SSH 连接，在断开时自动重连。</p>
+<p>autossh 使用方式：</p>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-bash" data-lang="Bash"><code># autossh -M 10086 -fCNR 23456:127.0.0.1:22 -i xxx.key B_user@B_public_ip</code></pre>
+</div>
+<p>参数解释：</p>
+<ol class="wp-block-list">
+  <li>
+    -M 指定的端口，也是开放在公网服务器 B 上，用来监听连接的状态，在断开时自动重连的
+  </li>
+  <li>
+    其他都是 SSH 自身的参数
+  </li>
+</ol>
+<h3 class="wp-block-heading" id="其他ssh-tunnel知识">其他SSH Tunnel知识</h3>
+<p>上述内容是将本地内网端口暴露到公网服务器上，叫做 <strong>SSH远程端口转发</strong></p>
+<p>SSH 本地端口转发，大概命令如下：</p>
+<div class="hcb_wrap">
+  <pre class="prism line-numbers lang-bash" data-lang="Bash"><code>ssh -L 9000:remotehost:80 user@host</code></pre>
+</div>
+<p>总结一下：</p>
+<ol class="wp-block-list">
+  <li>
+    SSH 本地端口转发，将远程主机的服务端口暴露到本地主机，用户可以在本地主机访问监听端口，就像访问远程服务一样。
+  </li>
+  <li>
+    SSH 远程端口转发，将本机的端口通过 SSH 连接暴露到远程主机，其他机器可以通过远程主机访问本地的服务。
+  </li>
+  <li>
+    SSH 还可以利用 SSH 隧道，在本地启动一个 socks 代理，使用 SSH 通道和远端服务器通信。
+  </li>
+</ol>
+<p>SSH 能支持端口转发，利用的是 <strong>TCP Forwarding</strong> ，TCP Forwarding 可以将一个 TCP 连接上的数据转发到另一个 TCP 连接上。</p>
+
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="
+  
+    S3 的生命周期规则，不是说删除后就立刻停止，对于已经应用了规则的对象，即使中途将规则删除了，那么这些对象依旧会运行删除的规则
+  
+  
+    断点续传的时间可以是 1 天、1 周，甚至更长，对于云存储的业务，特别要注意这点，不然可能会出问题。提前删除未上传完成的对象分片，导致断点续传失效，然后客户端也没有做失败后从头开始上传的逻辑，最终导致线上事故。
+  
+  
+    Yaml 文件中也是可以引用参数的，通过 ${name} 即可。我们可以通知此功能，在 K8S 中，将关键信息放到 secret 保存，通过环境变量挂在到 Pod 中，然后在 Yaml 中引用，最终能实现敏感信息单独存放 secret，控制人员的访问的权限避免泄漏，Pod Shell 的权限也需要管控。
+  
+  
+    当使用 Cloudfront 时，源站是 ALB，可以通过 AWS-managed prefix list for CloudFront 添加到 ALB 安全组中，就能做到只有 Cloudfront 节点能访问源站了，避免了源站直接对 ALL 开放。如果需要指定特定的 Cloudfront，还可以通过请求头匹配的方式，在 Cloudfront 中添加回源请求头，然后 ALB 的规则中加上对应的请求头匹配。
+  
+  
+    Athena 查询速度提升，可以通过分区表来缩小查询范围，从而提升查询速度。
+  
+">  
+
+  <title>
+    
+      20250323
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.900100e9dbee2d56c58fac8bb717037cae7e26a9c36c29d2ff587bdd65f0cbbe510b41d81a3bb234919cdfdc7550d786b2fab70c8fc507772d732fe097106d12.css" integrity="sha512-kAEA6dvuLVbFj6yLtxcDfK5&#43;JqnDbCnS/1h73WXwy75RC0HYGjuyNJGc39x1UNeGsvq3DI/FB3ctcy/glxBtEg==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="2025-03-24 14:26:00 &#43;0000 &#43;0000">
+            2025-03-24
+        </time>
+    </p>
+
+    <h1>20250323</h1>
+
+    
+
+    <ul class="wp-block-list">
+  <li>
+    S3 的生命周期规则，不是说删除后就立刻停止，对于已经应用了规则的对象，即使中途将规则删除了，那么这些对象依旧会运行删除的规则
+  </li>
+  <li>
+    断点续传的时间可以是 1 天、1 周，甚至更长，对于云存储的业务，特别要注意这点，不然可能会出问题。<br />提前删除未上传完成的对象分片，导致断点续传失效，然后客户端也没有做失败后从头开始上传的逻辑，最终导致线上事故。
+  </li>
+  <li>
+    Yaml 文件中也是可以引用参数的，通过 ${name} 即可。<br />我们可以通知此功能，在 K8S 中，将关键信息放到 secret 保存，通过环境变量挂在到 Pod 中，然后在 Yaml 中引用，最终能实现敏感信息单独存放 secret，控制人员的访问的权限避免泄漏，Pod Shell 的权限也需要管控。
+  </li>
+  <li>
+    当使用 Cloudfront 时，源站是 ALB，可以通过 AWS-managed prefix list for CloudFront 添加到 ALB 安全组中，就能做到只有 Cloudfront 节点能访问源站了，避免了源站直接对 ALL 开放。<br />如果需要指定特定的 Cloudfront，还可以通过请求头匹配的方式，在 Cloudfront 中添加回源请求头，然后 ALB 的规则中加上对应的请求头匹配。
+  </li>
+  <li>
+    Athena 查询速度提升，可以通过分区表来缩小查询范围，从而提升查询速度。
+  </li>
+</ul>
+</article>
+
+                
+
+            </div>
+        </main>
+    </body>
+</html>
